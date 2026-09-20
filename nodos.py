@@ -34,3 +34,6 @@ class Nodo:
 
     def __lt__(self, otro):
         return False
+
+    def lleno(self):
+        return self.personas == self.capacidad

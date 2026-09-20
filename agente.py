@@ -1,5 +1,6 @@
 
-from nodos import ESTADO, Nodo
+from BFS import bfs
+from nodos import ESTADO
 
 class Agente:
     def __init__(self, id_agente, inicio_nodo, algoritmo, nodo_meta):
@@ -11,6 +12,9 @@ class Agente:
         self.atrapado = False
         self.evacuado = False
         self.nodo_meta = nodo_meta
+
+        if not inicio_nodo.actualizar_costo(1):
+            raise ValueError("El nodo inicial del agente está lleno o no admite personas")
 
     def calcular_ruta(self, mapa):
         ruta = self.algoritmo(mapa, self.nodo_actual, self.nodo_meta)
@@ -36,27 +40,43 @@ class Agente:
             if len(self.camino) == 0: #si no encuentra ruta, se queda en su lugar
                 return
 
-        siguiente_mov = self.camino[self.indice_paso + 1]
-        #si su siguiente movimiento es en una casilla quemada, se recalcula ruta
-        if siguiente_mov.estado == ESTADO.quemado:
+        if self.indice_paso + 1 >= len(self.camino):
             self.calcular_ruta(mapa)
+            if len(self.camino) <= 1:
+                return
+
+        siguiente_mov = self.camino[self.indice_paso + 1]
+        # No se puede entrar a una casilla quemada o que ya alcanzó su capacidad.
+        if siguiente_mov.estado == ESTADO.quemado or siguiente_mov.lleno():
+            self.calcular_ruta(mapa)
+            if len(self.camino) <= 1:
+                return
+            siguiente_mov = self.camino[self.indice_paso + 1]
+
+        if siguiente_mov.estado == ESTADO.quemado or siguiente_mov.lleno():
+            return
     
 
         #si la siguiente celda tiene alguna persona o aglomeración, se recalcula la ruta, para confirmar si sigue siendo la mejor opción
+
         if siguiente_mov.costo > 1.0 and self.tiene_alternativas(mapa):
             self.calcular_ruta(mapa)
-    
+            siguiente_mov = self.camino[self.indice_paso + 1]
 
-        self.nodo_actual.personas = self.nodo_actual.personas - 1
+
+        if not siguiente_mov.actualizar_costo(1):
+            return
+
+        self.nodo_actual.actualizar_costo(-1)
         self.nodo_actual = siguiente_mov
-        self.nodo_actual.personas = self.nodo_actual.personas + 1
         self.indice_paso += 1
 
         if self.nodo_actual.estado == ESTADO.salida:
             self.evacuado = True
+            self.nodo_actual.actualizar_costo(-1)  # Liberar el nodo de salida al evacuar
             return
 
-            #determina si puede encontrar otra solución o esta obligado a irse al siguiente nodo
+    #determina si puede encontrar otra solución o esta obligado a irse al siguiente nodo
     def tiene_alternativas(self, mapa):
         #como si o si tendrá 2 alternativas, si encuentra otro nodo libre, puede haber otra solución al camino
         cont = 0
