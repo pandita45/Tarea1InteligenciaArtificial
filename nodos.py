@@ -13,14 +13,14 @@ class Nodo:
 
         self.costo = self.funcionCosto(0) # Inicializa el costo del nodo según la función f con 0 personas
         self.personas = 0
-        self.capacidad = 10 # Capacidad máxima de personas en el nodo
+        self.capacidad = 5 # Capacidad máxima de personas en el nodo
         self.x = x
         self.y = y
         
     def funcionCosto(self, personas):
         if self.estado in [ESTADO.muro, ESTADO.quemado]:
             return float('inf') # Costo infinito para nodos que son muros o quemados
-        return 1 + personas * 0.5 # Función de costo: f(x) = 1 + 0.5 * x, donde x es el número de personas en el nodo
+        return 1 + personas * 2 # Función de costo: f(x) = 1 + 2 * x, donde x es el número de personas en el nodo
     
     def actualizar_costo(self, accion): # Toma 1 si 1 persona entró al nodo y -1 si salió
         if accion == -1 and self.personas == 0:
