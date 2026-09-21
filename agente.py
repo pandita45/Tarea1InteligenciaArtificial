@@ -13,9 +13,6 @@ class Agente:
         self.evacuado = False
         self.nodo_meta = nodo_meta
 
-        if not inicio_nodo.actualizar_costo(1):
-            return #si no puede actualizar el costo, significa que ya esta lleno, por lo que no se puede crear el agente en ese nodo
-
     def calcular_ruta(self, mapa):
         ruta = self.algoritmo(mapa, self.nodo_actual, self.nodo_meta)
         if ruta and len(ruta) > 1: #por si el agente queda acorralado en fuegos o no encuentra camino

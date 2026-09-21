@@ -31,7 +31,6 @@ def astar(mapa, inicio, nodo_meta):
             while nodo_actual is not None:
                     camino.append(nodo_actual)
                     nodo_actual = padres[nodo_actual]
-            print(f"Camino encontrado: {[ (n.x, n.y) for n in camino[::-1] ]}")  # Imprime el camino desde inicio hasta salida
             return camino[::-1]  # Devolver el camino en orden desde inicio hasta salida
 
 
