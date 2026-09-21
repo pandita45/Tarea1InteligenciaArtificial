@@ -14,7 +14,7 @@ class Agente:
         self.nodo_meta = nodo_meta
 
         if not inicio_nodo.actualizar_costo(1):
-            raise ValueError("El nodo inicial del agente está lleno o no admite personas")
+            return #si no puede actualizar el costo, significa que ya esta lleno, por lo que no se puede crear el agente en ese nodo
 
     def calcular_ruta(self, mapa):
         ruta = self.algoritmo(mapa, self.nodo_actual, self.nodo_meta)
