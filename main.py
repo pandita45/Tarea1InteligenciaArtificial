@@ -4,6 +4,8 @@ from agente import Agente
 from mapa import Mapa
 from nodos import ESTADO
 from ASTAR import astar
+from GREEDY import greedy
+from ALGORITMOGENETICO import algoritmo_genetico
 
 def buscar_nodo_salida(grilla):
     for i in range(grilla.shape[0]):
