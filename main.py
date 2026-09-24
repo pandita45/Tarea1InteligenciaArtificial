@@ -1,64 +1,70 @@
-import numpy as np
+import random
+from statistics import mean, stdev
+
 from BFS import bfs
 from agente import Agente
 from mapa import Mapa
 from nodos import ESTADO
 from ASTAR import astar
 from GREEDY import greedy
+from DFS import dfs
 from ALGORITMOGENETICO import algoritmo_genetico
+import time
+import numpy as np
 
-def buscar_nodo_salida(grilla):
-    for i in range(grilla.shape[0]):
-        for j in range(grilla.shape[1]):
-            if grilla[i, j].estado == ESTADO.salida:
-                return (i, j)
-    return None
+# Mapas y algoritmos a evaluar[cite: 2]
+MAPAS = ["1", "2", "3"] # 1 cuello de botella, 2 dispersion abierta, 3 laberinto corporativo
+ALGORITMOS = {
+    "BFS": bfs,
+    "DFS": dfs,
+    "Greedy": greedy,
+    "A_Star": astar,
+    "Genetico": algoritmo_genetico
+}
 
+NUM_AGENTES = 30
+ITERACIONES = 200  
+ARCHIVO_SALIDA = "resultados_benchmark.txt"
 
-mapa = Mapa(3)  # Cargar el mapa de cuello de botella
-x,y = buscar_nodo_salida(mapa.grilla)
+def obtener_inicio(mapa):
+    # Se obtiene un nodo de inicio aleatorio que no sea una muralla o muy cerca de la salida
+    lim_superior = (mapa.filas - 1) // 2 # Limite superior para evitar que el nodo de inicio esté demasiado cerca de la salida
 
-agente1 = Agente(1, mapa.grilla[1, 2], bfs, mapa.grilla[x, y])  # Crear un agente en la posición (0, 0) usando BFS
-print(f"Agente en posición: ({agente1.nodo_actual.x}, {agente1.nodo_actual.y})")
-# Simulación de movimiento del agente
-for _ in range(30):
-    agente1.mover(mapa)
-    print(f"Agente en posición: ({agente1.nodo_actual.x}, {agente1.nodo_actual.y})")
-    if agente1.evacuado:
-        print("El agente ha evacuado con éxito.")
-        break
-    elif agente1.atrapado:
-        print("El agente ha quedado atrapado.")
-        break
+    while True:
+        x = random.randint(0, lim_superior)
+        y = random.randint(0, mapa.columnas - 1)
+        nodo = mapa.grilla[x, y]
 
-
-
-mapa2 = Mapa(3)
-print("ALO KIKE")
-agente2 = Agente(2, mapa2.grilla[1, 2], bfs, mapa2.grilla[x, y])  # Crear un agente en la posición (0, 0) usando BFS
-print(f"Agente en posición: ({agente2.nodo_actual.x}, {agente2.nodo_actual.y})")
-# Simulación de movimiento del agente
-for _ in range(30):
-    agente2.mover(mapa2)
-    print(f"Agente en posición: ({agente2.nodo_actual.x}, {agente2.nodo_actual.y})")
-    if agente2.evacuado:
-        print("El agente ha evacuado con éxito.")
-        break
-    elif agente2.atrapado:
-        print("El agente ha quedado atrapado.")
-        break
+        if nodo.estado == ESTADO.transitable and not nodo.lleno():  # Verifica que el nodo sea transitable y no esté lleno
+            #se actualiza su capacidad
+            nodo.actualizar_costo(1) 
+            return nodo
 
 
-mapa3 = Mapa(3)
-agente3 = Agente(3, mapa3.grilla[1, 2], astar, mapa3.grilla[x, y])  # Crear un agente en la posición (0, 0) usando A*
-print(f"Agente en posición: ({agente3.nodo_actual.x}, {agente3.nodo_actual.y})")
-# Simulación de movimiento del agente
-for _ in range(40):
-    agente3.mover(mapa3)
-    print(f"Agente en posición: ({agente3.nodo_actual.x}, {agente3.nodo_actual.y})")
-    if agente3.evacuado:
-        print("El agente ha evacuado con éxito.")
-        break
-    elif agente3.atrapado:
-        print("El agente ha quedado atrapado.")
-        break
+def propagacion_fuego(k, mapa):
+    nuevos_quemados = set()
+    
+    for i in range(mapa.filas):
+        for j in range(mapa.columnas):
+            nodo = mapa.grilla[i, j]
+            if nodo.estado == ESTADO.quemado:
+                for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                    nx, ny = i + dx, j + dy
+                    if 0 <= nx < mapa.filas and 0 <= ny < mapa.columnas:
+                        vecino = mapa.grilla[nx, ny]
+                        if vecino.estado == ESTADO.transitable:
+                            nuevos_quemados.add(vecino)
+
+    for vecino in nuevos_quemados:
+        vecino.estado = ESTADO.quemado
+        vecino.actualizar_costo(1)
+        
+def ejecutar_benchmark():
+
+    for algoritmo in ALGORITMOS:
+        for mapa in MAPAS:
+            
+            for iteracion in range(ITERACIONES):
+                id_agente = 0
+
+                agentes = [Agente(id_agente:=id_agente+1, obtener_inicio(mapa), ALGORITMOS[algoritmo], mapa.obtener_salida()) for i in range(NUM_AGENTES)]

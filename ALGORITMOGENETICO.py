@@ -78,7 +78,8 @@ def seleccion_torneo(poblacion, k=3):
 
 
 
-def algoritmo_genetico(mapa, inicio, nodo_meta, tam_poblacion=40, generaciones=50, tasa_mutacion=0.15):
+
+def algoritmo_genetico(mapa, inicio, nodo_meta, tam_poblacion=30, generaciones=50, tasa_mutacion=0.15):
     
     dist_base = distancia_manhattan(inicio, nodo_meta)
     longitud_genes = max(15, int(dist_base * 2.0))

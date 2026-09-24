@@ -4,14 +4,10 @@ from collections import deque
 def dfs(mapa, inicio, meta_nodo = None): #Para hacer mas universal el algoritmo, no tiene ninguna función meta_nodo
     #iniciar la pila con el nodo inicial
     pila = deque([inicio])
-    visitados = set()
+    visitados = {inicio}
     padres = {inicio: None}  # Diccionario para rastrear los padres de cada nodo
     while pila:
         nodo_actual = pila.pop()
-        if nodo_actual in visitados:
-            continue
-        visitados.add(nodo_actual)
-        
         if nodo_actual.estado == ESTADO.salida:
             # Reconstruir el camino desde el nodo de salida hasta el nodo inicial
             camino = []

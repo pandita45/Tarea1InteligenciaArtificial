@@ -36,7 +36,12 @@ class Mapa:
                     grilla[i, j] = Nodo(ESTADO.muro, i, j)
                 elif char == 'S':
                     grilla[i, j] = Nodo(ESTADO.salida, i, j)
-                    self.salida = (i, j)
+                    self.salida = grilla[i, j]
+                elif char == 'F':
+                    grilla[i, j] = Nodo(ESTADO.quemado, i, j)
 
         return grilla
+
+    def obtener_salida(self):
+        return self.salida
         

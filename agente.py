@@ -58,6 +58,8 @@ class Agente:
 
         if siguiente_mov.costo > 1.0 and self.tiene_alternativas(mapa):
             self.calcular_ruta(mapa)
+            if len(self.camino) <= self.indice_paso + 1:
+                return
             siguiente_mov = self.camino[self.indice_paso + 1]
 
 

@@ -46,9 +46,7 @@ def astar(mapa, inicio, nodo_meta):
                     g_nuevo = g[nodo_actual] + vecino.costo  # Costo acumulado desde el nodo inicial hasta el vecino
                     f_nuevo = g_nuevo + funcion_Manhattan(vecino, nodo_meta)  # Costo total estimado para el vecino
 
-                    print(f"Evaluando vecino: {vecino.x}, {vecino.y}, g_nuevo: {g_nuevo}, f_nuevo: {f_nuevo}")
                     if vecino not in g or g_nuevo < g[vecino]:
-                        print(f"Actualizando vecino: {vecino.x}, {vecino.y}, g: {g_nuevo}, f: {f_nuevo}")
                         g[vecino] = g_nuevo
                         f[vecino] = f_nuevo
                         padres[vecino] = nodo_actual  # Registrar el padre del vecino
