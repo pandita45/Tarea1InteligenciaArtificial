@@ -13,7 +13,7 @@ class Nodo:
 
         self.costo = self.funcionCosto(0) # Inicializa el costo del nodo según la función f con 0 personas
         self.personas = 0
-        self.capacidad = 5 # Capacidad máxima de personas en el nodo
+        self.capacidad = 20 # Capacidad máxima de personas en el nodo
         self.x = x
         self.y = y
         

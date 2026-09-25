@@ -43,20 +43,21 @@ class Agente:
                 return
 
         siguiente_mov = self.camino[self.indice_paso + 1]
-        # No se puede entrar a una casilla quemada o que ya alcanzó su capacidad.
-        if siguiente_mov.estado == ESTADO.quemado or siguiente_mov.lleno():
-            self.calcular_ruta(mapa)
-            if len(self.camino) <= 1:
-                return
-            siguiente_mov = self.camino[self.indice_paso + 1]
 
-        if siguiente_mov.estado == ESTADO.quemado or siguiente_mov.lleno():
-            return
+
+        #revisa si algun nodo del camino le alcanzo el fuego, si es así, recalcula la ruta
+        for i in self.camino:
+            if i.estado == ESTADO.quemado:
+                self.calcular_ruta(mapa)
+                if len(self.camino) <= 1:
+                    return
+                siguiente_mov = self.camino[self.indice_paso + 1]
+                break
     
 
         #si la siguiente celda tiene alguna persona o aglomeración, se recalcula la ruta, para confirmar si sigue siendo la mejor opción
 
-        if siguiente_mov.costo > 1.0 and self.tiene_alternativas(mapa):
+        if (siguiente_mov.costo > 1.0 or siguiente_mov.lleno()) and self.tiene_alternativas(mapa):
             self.calcular_ruta(mapa)
             if len(self.camino) <= self.indice_paso + 1:
                 return

@@ -24,9 +24,9 @@ ALGORITMOS = {
     "Genetico": algoritmo_genetico,
 }
 
-NUM_AGENTES = 30
+NUM_AGENTES = 80
 ITERACIONES = 200
-K_FUEGO = 2
+K_FUEGO = 3
 MAX_TURNOS = 200
 ARCHIVO_SALIDA = "resultados_benchmark.txt"
 
@@ -92,7 +92,7 @@ def ejecutar_benchmark():
                     agentes = [
                         Agente(
                             id_agente := id_agente + 1,
-                            obtener_inicio(mapa_actual),
+                            mapa_actual.obtener_spawn(),
                             func_alg,
                             nodo_salida,
                         )
