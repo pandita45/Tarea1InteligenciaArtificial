@@ -34,9 +34,10 @@ class Agente:
         #si no tiene ruta, calcula 1, ideal en la primera iteración
         if len(self.camino) == 0:
             self.calcular_ruta(mapa)
-            if len(self.camino) == 0: #si no encuentra ruta, se queda en su lugar
+            if len(self.camino) == 0: #si no encuentra ruta o esta encerrado, se queda en su lugar
                 return
 
+        #si ya llego al final de la ruta, calcula otra (algoritmo genetico)
         if self.indice_paso + 1 >= len(self.camino):
             self.calcular_ruta(mapa)
             if len(self.camino) <= 1:
@@ -63,7 +64,7 @@ class Agente:
                 return
             siguiente_mov = self.camino[self.indice_paso + 1]
 
-
+        #revisa si puede moverse al siguiente nodo, si no puede, se queda en su lugar
         if not siguiente_mov.actualizar_costo(1):
             return
 
